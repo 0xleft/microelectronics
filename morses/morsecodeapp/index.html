@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>8x8 Button Grid</title>
+</head>
+
+<body>
+    <table id="buttonGrid">
+    </table>
+
+    <h1 id="outputString"></h1>
+
+    <script>
+        function populateGrid() {
+            const grid = document.getElementById('buttonGrid');
+            for (let i = 0; i < 8; i++) {
+                const row = document.createElement('tr');
+                for (let j = 0; j < 8; j++) {
+                    const cell = document.createElement('td');
+                    const button = document.createElement('button');
+                    button.style.aspectRatio = "1/1";
+                    button.textContent = `${i}${j}`;
+                    button.onclick = function() {
+                        this.style.backgroundColor = "blue";
+                        this.disabled = !this.disabled;
+
+                        let state = rotateClockwise(rotateClockwise(rotateClockwise(getState())));
+                        
+                        let outputString = "{";
+                        
+                        let i = 0;
+                        state.forEach(row => {
+                            outputString += "B";
+                            row.forEach(elem => {
+                                outputString += elem ? "1" : "0";
+                            });
+
+                            if (i !== 7) {
+                                outputString += ","
+                            }
+                            i++;
+                        });
+
+                        document.getElementById("outputString").innerText = outputString + "}";
+                    };
+                    cell.appendChild(button);
+                    row.appendChild(cell);
+                }
+                grid.appendChild(row);
+            }
+        }
+
+        // Populate the grid on page load
+        window.onload = populateGrid;
+
+        function getState() {
+            const grid = document.getElementById('buttonGrid');
+            const rows = grid.getElementsByTagName('tr');
+            let state = [];
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowState = [];
+                for (let j = 0; j < cells.length; j++) {
+                    const button = cells[j].getElementsByTagName('button')[0];
+                    rowState.push(button.disabled);
+                }
+                state.push(rowState);
+            }
+
+            // state = state[0].map((_, i) => state.map(row => row[i]));
+            return state;
+        }
+
+        function rotateClockwise(a) {
+            var n = a.length;
+            for (var i = 0; i < n / 2; i++) {
+                for (var j = i; j < n - i - 1; j++) {
+                    var tmp = a[i][j];
+                    a[i][j] = a[n - j - 1][i];
+                    a[n - j - 1][i] = a[n - i - 1][n - j - 1];
+                    a[n - i - 1][n - j - 1] = a[j][n - i - 1];
+                    a[j][n - i - 1] = tmp;
+                }
+            }
+            return a;
+        }
+</script>
+</body>
+</html>
