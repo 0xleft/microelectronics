@@ -18,18 +18,17 @@ void setup() {
   pinMode(buttonPin, INPUT);
 
   setupLeds(displayCount);
-  displayString("9y", displayCount);
 }
 
 void printLetterBuffer() {
   Letter result = findLetter(letterBuffer.c_str());
 
   if (result.representation != ' ') {
-    // todo
-    return;
-  }
+    String newString = translatedBuffer.substring(0, 3);
+    translatedBuffer = result.representation + newString;
 
-  Serial.println(result.representation);
+    displayString(translatedBuffer.c_str(), 4);
+  }
 }
 
 // handles when the button is clicked
